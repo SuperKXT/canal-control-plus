@@ -1,0 +1,110 @@
+body {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: none;
+    width: 650px;
+    height: 600px;
+    background-color: #000000;
+}
+
+#main{
+    cursor: none;
+    width: 500px;
+    height: 600px;
+    background-color: #53b1f5;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    float: left;
+}
+
+button {
+    
+    cursor: none;       /*Disabling cursors*/
+    pointer-events: none;   /*Disabling mouse clicks*/
+    float: left;
+    width: 50px;
+    height: 50px;
+    border: 2px solid;
+    border-color: white;
+    border-style: outset;
+    text-align: left;
+    background: -webkit-linear-gradient(left top, #0e23a0 , #77B5FE , white); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom right, #0e23a0 , #77B5FE , white); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom right, #0e23a0 , #77B5FE , white); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom right, #0e23a0 , #77B5FE , white); /* Standard syntax */
+    position: relative;
+}
+button:focus {
+    outline: none;
+    border: 5px;
+    border-color: #1aaad9;
+    border-style: outset;
+}
+
+#head {
+    height: 100px;
+    width: 500px;
+    background-color: DodgerBlue;
+    border: 1px solid;
+    border-color: Blue;
+    text-align: center;
+    color: White;
+    font-size: 25px;
+    vertical-align: middle;
+}
+
+#level {
+    margin-top: 15px;
+}
+
+#score {
+    margin-left: 15px;
+    float: left;
+}
+
+#remaining {
+    margin-right: 15px;
+    float: right;
+}
+
+#side {
+    height: 600px;
+    width: 100px;
+    background-color: DodgerBlue;
+    border: 1px solid;
+    border-color: Blue;
+    float: left;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#pipe5,
+#pipe4,
+#pipe3,
+#pipe2,
+#pipe1 {
+    height: 80px;
+    width: 80px;
+    background-color: #53b1f5;
+    margin-bottom: 3px;
+    position: relative;
+    margin-left: 10px;
+   
+}
+
+#logo {
+    margin-left: 20px;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+div img {
+    position: absolute;
+    left: 0%;
+    top: 0%;
+
+}

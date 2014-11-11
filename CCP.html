@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Canal Control Plus</title>
+        <link rel="stylesheet" type="text/css" href="StyleSheet.css">
+        <script src="jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="constants.js"></script>
+		<script type="text/javascript" src="game.js"></script>
+        <script>$(document).ready(initialize);     </script>
+    </head>
+
+    <body onkeypress="keyUpHandler(event)">
+        <div id="main">
+            <div id="head">
+                <div id="level"></div>
+                <div id="score"></div>
+                <div id="remaining"></div>
+            </div>
+            <button type="button" id="00" data-pipe="none"></button
+            ><button type="button" id="01" data-pipe="none"></button
+            ><button type="button" id="02" data-pipe="none"></button
+            ><button type="button" id="03" data-pipe="none"></button
+            ><button type="button" id="04" data-pipe="none"></button
+            ><button type="button" id="05" data-pipe="none"></button
+            ><button type="button" id="06" data-pipe="none"></button
+            ><button type="button" id="07" data-pipe="none"></button
+            ><button type="button" id="08" data-pipe="none"></button
+            ><button type="button" id="09" data-pipe="none"></button>
+            <br style="clear: both">
+            <button type="button" id="10" data-pipe="none"></button
+            ><button type="button" id="11" data-pipe="none"></button
+            ><button type="button" id="12" data-pipe="none"></button
+            ><button type="button" id="13" data-pipe="none"></button
+            ><button type="button" id="14" data-pipe="none"></button
+            ><button type="button" id="15" data-pipe="none"></button
+            ><button type="button" id="16" data-pipe="none"></button
+            ><button type="button" id="17" data-pipe="none"></button
+            ><button type="button" id="18" data-pipe="none"></button
+            ><button type="button" id="19" data-pipe="none"></button>
+            <br style="clear: both">
+            <button type="button" id="20" data-pipe="none"></button
+            ><button type="button" id="21" data-pipe="none"></button
+            ><button type="button" id="22" data-pipe="none"></button
+            ><button type="button" id="23" data-pipe="none"></button
+            ><button type="button" id="24" data-pipe="none"></button
+            ><button type="button" id="25" data-pipe="none"></button
+            ><button type="button" id="26" data-pipe="none"></button
+            ><button type="button" id="27" data-pipe="none"></button
+            ><button type="button" id="28" data-pipe="none"></button
+            ><button type="button" id="29" data-pipe="none"></button>
+            <br style="clear: both">
+            <button type="button" id="30" data-pipe="none"></button
+            ><button type="button" id="31" data-pipe="none"></button
+            ><button type="button" id="32" data-pipe="none"></button
+            ><button type="button" id="33" data-pipe="none"></button
+            ><button type="button" id="34" data-pipe="none"></button
+            ><button type="button" id="35" data-pipe="none"></button
+            ><button type="button" id="36" data-pipe="none"></button
+            ><button type="button" id="37" data-pipe="none"></button
+            ><button type="button" id="38" data-pipe="none"></button
+            ><button type="button" id="39" data-pipe="none"></button>
+            <br style="clear: both">
+            <button type="button" id="40" data-pipe="none"></button
+            ><button type="button" id="41" data-pipe="none"></button
+            ><button type="button" id="42" data-pipe="none"></button
+            ><button type="button" id="43" data-pipe="none"></button
+            ><button type="button" id="44" data-pipe="none"></button
+            ><button type="button" id="45" data-pipe="none"></button
+            ><button type="button" id="46" data-pipe="none"></button
+            ><button type="button" id="47" data-pipe="none"></button
+            ><button type="button" id="48" data-pipe="none"></button
+            ><button type="button" id="49" data-pipe="none"></button>
+            <br style="clear: both">
+            <button type="button" id="50" data-pipe="none"></button
+            ><button type="button" id="51" data-pipe="none"></button
+            ><button type="button" id="52" data-pipe="none"></button
+            ><button type="button" id="53" data-pipe="none"></button
+            ><button type="button" id="54" data-pipe="none"></button
+            ><button type="button" id="55" data-pipe="none"></button
+            ><button type="button" id="56" data-pipe="none"></button
+            ><button type="button" id="57" data-pipe="none"></button
+            ><button type="button" id="58" data-pipe="none"></button
+            ><button type="button" id="59" data-pipe="none"></button>
+            <br style="clear: both">
+            <button type="button" id="60" data-pipe="none"></button
+            ><button type="button" id="61" data-pipe="none"></button
+            ><button type="button" id="62" data-pipe="none"></button
+            ><button type="button" id="63" data-pipe="none"></button
+            ><button type="button" id="64" data-pipe="none"></button
+            ><button type="button" id="65" data-pipe="none"></button
+            ><button type="button" id="66" data-pipe="none"></button
+            ><button type="button" id="67" data-pipe="none"></button
+            ><button type="button" id="68" data-pipe="none"></button
+            ><button type="button" id="69" data-pipe="none"></button>
+            <br style="clear: both">
+            <button type="button" id="70" data-pipe="none"></button
+            ><button type="button" id="71" data-pipe="none"></button
+            ><button type="button" id="72" data-pipe="none"></button
+            ><button type="button" id="73" data-pipe="none"></button
+            ><button type="button" id="74" data-pipe="none"></button
+            ><button type="button" id="75" data-pipe="none"></button
+            ><button type="button" id="76" data-pipe="none"></button
+            ><button type="button" id="77" data-pipe="none"></button
+            ><button type="button" id="78" data-pipe="none"></button
+            ><button type="button" id="79" data-pipe="none"></button>
+            <br style="clear: both">
+            <button type="button" id="80" data-pipe="none"></button
+            ><button type="button" id="81" data-pipe="none"></button
+            ><button type="button" id="82" data-pipe="none"></button
+            ><button type="button" id="83" data-pipe="none"></button
+            ><button type="button" id="84" data-pipe="none"></button
+            ><button type="button" id="85" data-pipe="none"></button
+            ><button type="button" id="86" data-pipe="none"></button
+            ><button type="button" id="87" data-pipe="none"></button
+            ><button type="button" id="88" data-pipe="none"></button
+            ><button type="button" id="89" data-pipe="none"></button>
+            <br style="clear: both">
+            <button type="button" id="90" data-pipe="none"></button
+            ><button type="button" id="91" data-pipe="none"></button
+            ><button type="button" id="92" data-pipe="none"></button
+            ><button type="button" id="93" data-pipe="none"></button
+            ><button type="button" id="94" data-pipe="none"></button
+            ><button type="button" id="95" data-pipe="none"></button
+            ><button type="button" id="96" data-pipe="none"></button
+            ><button type="button" id="97" data-pipe="none"></button
+            ><button type="button" id="98" data-pipe="none"></button
+            ><button type="button" id="99" data-pipe="none"></button>
+            <br style="clear: both">
+
+        </div>
+        <div id="side">
+            <div id="pipe5"></div>
+            <div id="pipe4"></div>
+            <div id="pipe3"></div>
+            <div id="pipe2"></div>
+            <div id="pipe1"></div>
+            <br>
+            <div id="logo"></div>
+            <br><br><br>
+            <div id="timerLabel" style="font-family: 'Akshar Unicode'">Next Wave in:</div>
+            <div id="timer" style="font-family: 'Akshar Unicode'; font-size: 25px"></div>
+        </div>
+    </body>
+</html>
