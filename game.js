@@ -4,25 +4,29 @@ $.getScript("constants.js", function(){
 });
 
 // Storing the path for next five pipes
-//  1 = lef tright
+//  1 = left right
 //  2 = top bottom
 //  3 = square
 //  4 = left top
 //  5 = left bottom
 //  6 = right top
 //  7 = right down
+//  8 = left right 2 
+//  9 = top bottom 2
+//  two straight pipes to increase probability 
 var pipe1 = getRandomInt();
 var pipe2 = getRandomInt();
 var pipe3 = getRandomInt();
 var pipe4 = getRandomInt();
 var pipe5 = getRandomInt();
 
-generatePipes()
+generatePipes();
 current_x = STARTING_X + 1;
 current_y = STARTING_Y;
 
 score = 0;
 level = 0;
+totalRemaining = 4;
 remaining = 4;
 time = 55;
 remaining_Time = time;
@@ -30,9 +34,28 @@ water_x = STARTING_X;
 water_y = STARTING_Y;
 direction = 2;
 
+// 1 second
+interval = 1000;
+
 // Level Start Initializer
-function initialize()
+function start()
 {
+	// Get the highscores.
+	high[0] = document.getElementById("scoreOne").innerHTML;
+	high[1] = document.getElementById("scoreTwo").innerHTML;
+	high[2] = document.getElementById("scoreThree").innerHTML;
+	high[3] = document.getElementById("scoreFour").innerHTML;
+	high[4] = document.getElementById("scoreFive").innerHTML;
+	high[5] = document.getElementById("scoreSix").innerHTML;
+	high[6] = document.getElementById("scoreSeven").innerHTML;
+	high[7] = document.getElementById("scoreEight").innerHTML;
+	high[8] = document.getElementById("scoreNine").innerHTML;
+	high[9] = document.getElementById("scoreTen").innerHTML;
+	
+    // Clearing all the current boxes and pipes.
+    reset();
+	interval = 1000;
+
     var pipe1 = getRandomInt();
     var pipe2 = getRandomInt();
     var pipe3 = getRandomInt();
@@ -50,7 +73,8 @@ function initialize()
     level += 1;
 
     // Updating the remaining pipes.
-    remaining += 1;
+    totalRemaining += 1;
+    remaining = totalRemaining;
 
     // Updating the time between two water flows.
     if(time != 5)
@@ -78,28 +102,25 @@ function initialize()
     // Setting the initial selected box.
     element = current_y.toString() + current_x.toString();
     document.getElementById(element).focus();
-         
-    //-------------
-    //Disabling Tabs
-    //-------------
-    $.prototype.disableTab = function() {
-        this.each(function() {
-            $(this).attr('tabindex', '-1');
-        });
-    };
-    $('button').disableTab();
 
     // initializing the right side
     side();
 
     // putting the starting and ending pipe
     var temp = STARTING_Y.toString() + STARTING_X.toString();
-    document.getElementById(temp).innerHTML = "<img src= 'pipe_start.png' width='50'>";
-    document.getElementById(temp).setAttribute("data-pipe", "start");
+    //document.getElementById(temp).innerHTML = "<img src= 'pipe_start.png'>";
+	document.getElementById(temp).innerHTML = "<span class= 'pipe_start sprite'></span>";
+    document.getElementById(temp).setAttribute("data-pipe", "0");
 
     temp = ENDING_Y.toString() + ENDING_X.toString();
-    document.getElementById(temp).innerHTML = "<img src= 'pipe_end.png' width='50'>";
-    document.getElementById(temp).setAttribute("data-pipe", "end");
+    //document.getElementById(temp).innerHTML = "<img src= 'pipe_end.png'>";
+	document.getElementById(temp).innerHTML = "<span class='pipe_end sprite'></span>";
+    document.getElementById(temp).setAttribute("data-pipe", "99");
+	
+	//------------
+	//Timer loop
+	//------------
+	loop = window.setInterval(timerLoop, interval);
 }
 
 // Updating the selected box.
@@ -108,28 +129,42 @@ function positionUpdate()
     element = current_y.toString() + current_x.toString();
     document.getElementById(element).focus();
 }
-     
-//------------
-//Game Loop
-//------------
-window.setInterval(function () {
+
+// Loop Function
+function timerLoop() {
     document.getElementById("timer").innerHTML = remaining_Time;
     remaining_Time -= 1;
-    if (remaining_Time == 0) 
+	if (remaining_Time == 1)
+	{
+		startPipeAnimation();
+	}
+    else if (remaining_Time == 0) 
     {
         checkNext();
         remaining_Time = time;
     }
-}, 1000);
-
-
+}
 
 //------------
-//Key Handlers
+//Key Handlers, used for setting / restoring normal speed.
 //------------
 function keyUpHandler(event)
 {
    var keyPressed = event.which || event.keyCode;
+    if (keyPressed == 32)   // space key
+    {
+        interval = (interval == 1000) ? 50 : 1000;
+        window.clearInterval(loop);
+        loop = window.setInterval(timerLoop, interval);
+    }
+}
+
+//------------
+//Key Down Handler
+//------------
+function keyDownHandler(event) 
+{
+    var keyPressed = event.which || event.keyCode;
     if (keyPressed == 38)   //up key
     {	
         if(current_y>0)
@@ -181,14 +216,38 @@ function keyUpHandler(event)
     }
     else if (keyPressed == 13) // enter key
     {
+		//Pipe already filled.
         if(document.activeElement.hasChildNodes())
         {
-            // do nothing if the box already has a pipe.
+            var p = document.activeElement.getAttribute('data-pipe') ;
+			//Overwrite if pipe not filled by water, also deduce score.
+            if(!(p > 9) && ((p != 0) && (p != 99)))
+            {
+                //document.activeElement.innerHTML = "<img src= 'pipe_"+pipe1+".png'>";
+                document.activeElement.innerHTML = "<span class= 'pipe_"+pipe1+" sprite'></span>";
+                document.activeElement.setAttribute("data-pipe", pipe1.toString());
+				var aud = document.getElementById("pipe_duplicate");
+				aud.play();
+                updatePipes();
+                side();
+                score -= 40;
+                head();
+            }
+			else {
+				var aud = document.getElementById("pipe_occupied");
+				aud.play();
+			}
         }
+		else if (keyPressed == 9) {  //tab pressed
+			event.preventDefault(); // stops its action
+		}
         else
         {
-            document.activeElement.innerHTML = "<img src= 'pipe_"+pipe1+".png' width='50'>";
+            //document.activeElement.innerHTML = "<img src= 'pipe_"+pipe1+".png'>";
+            document.activeElement.innerHTML = "<span class= 'pipe_"+pipe1+" sprite'></span>";
             document.activeElement.setAttribute("data-pipe", pipe1.toString());
+			var aud = document.getElementById("pipe_down");
+			aud.play();
             updatePipes();
             side();
         }
@@ -226,27 +285,72 @@ function head()
 
 // Function to upate the right hand side.
 function side() {
-    document.getElementById("pipe5").innerHTML = "<img src= 'pipe_"+pipe5+".png' width='80'>"
-    document.getElementById("pipe4").innerHTML = "<img src= 'pipe_"+pipe4+".png' width='80'>"
-    document.getElementById("pipe3").innerHTML = "<br><img src= 'pipe_"+pipe3+".png' width='80'>"
-    document.getElementById("pipe2").innerHTML = "<br><img src= 'pipe_"+pipe2+".png' width='80'>"
-    document.getElementById("pipe1").innerHTML = "<br><img src= 'pipe_"+pipe1+".png' width='80'>";
-    document.getElementById("logo").innerHTML = "<br><img src= 'logo.png' width='60'>";
+    //document.getElementById("pipe5").innerHTML = "<img src= 'pipe_"+pipe5+".png'>";
+	//document.getElementById("pipe4").innerHTML = "<img src= 'pipe_"+pipe4+".png'>";
+    //document.getElementById("pipe3").innerHTML = "<img src= 'pipe_"+pipe3+".png'>";
+    //document.getElementById("pipe2").innerHTML = "<img src= 'pipe_"+pipe2+".png'>";
+    //document.getElementById("pipe1").innerHTML = "<img src= 'pipe_"+pipe1+".png'>";
+    document.getElementById("pipe5").innerHTML = "<span class= 'pipe_"+pipe5+" sprite'></span>";
+    document.getElementById("pipe4").innerHTML = "<span class= 'pipe_"+pipe4+" sprite'></span>";
+    document.getElementById("pipe3").innerHTML = "<span class= 'pipe_"+pipe3+" sprite'></span>";
+    document.getElementById("pipe2").innerHTML = "<span class= 'pipe_"+pipe2+" sprite'></span>";
+    document.getElementById("pipe1").innerHTML = "<span class= 'pipe_"+pipe1+" sprite'></span>";
+    document.getElementById("logo").innerHTML = "<img src= 'logo.png'>";
+}
+
+//animating the start pipe, indicating the coming wave.
+function startPipeAnimation() {
+	var aud = document.getElementById("water_flow");
+	aud.play();
+	if(water_x == STARTING_X && water_y == STARTING_Y)
+    {
+		setTimeout(function(){			
+			document.getElementById((STARTING_Y).toString() + STARTING_X.toString()).innerHTML = "<span class= 'pipe_start_a_1 sprite'></span>";
+		}, 250); 
+		setTimeout(function(){			
+			document.getElementById((STARTING_Y).toString() + STARTING_X.toString()).innerHTML = "<span class= 'pipe_start_a_2 sprite'></span>";
+		}, 500);
+		setTimeout(function(){			
+			document.getElementById((STARTING_Y).toString() + STARTING_X.toString()).innerHTML = "<span class= 'pipe_start_a_3 sprite'></span>";
+		}, 750);
+		setTimeout(function(){			
+			document.getElementById((STARTING_Y).toString() + STARTING_X.toString()).innerHTML = "<span class= 'f_pipe_start sprite'></span>";
+		}, 1000);		
+    }	
+	else {
+		setTimeout(function(){			
+			document.getElementById((STARTING_Y).toString() + STARTING_X.toString()).innerHTML = "<span class= 'f_pipe_start_a_1 sprite'></span>";
+		}, 250); 
+		setTimeout(function(){			
+			document.getElementById((STARTING_Y).toString() + STARTING_X.toString()).innerHTML = "<span class= 'f_pipe_start_a_2 sprite'></span>";
+		}, 500);
+		setTimeout(function(){			
+			document.getElementById((STARTING_Y).toString() + STARTING_X.toString()).innerHTML = "<span class= 'f_pipe_start_a_3 sprite'></span>";
+		}, 750);
+		setTimeout(function(){			
+			document.getElementById((STARTING_Y).toString() + STARTING_X.toString()).innerHTML = "<span class= 'f_pipe_start sprite'></span>";
+		}, 1000);
+	}
 }
 
 // Check the next Box to see if there is a connected pipe.
+    //  1 = left
+    //  2 = right
+    //  3 = up
+    //  4 = down
 function checkNext()
 {
     if(direction == 1)
     {
         water_x = (water_x==0) ? 9 : water_x-1;
         var temp = parseInt(document.getElementById((water_y).toString() + water_x.toString()).getAttribute("data-pipe"));
-        if(temp == 1)
+		
+       if(temp == 1)
         {
             direction = 1;
             fillCurrent(1);
         }
-        else if(temp == 3)
+        else if(temp == 3 || temp == '23')
         {
             direction = 1;
             fillCurrent(3);
@@ -273,12 +377,6 @@ function checkNext()
     }
     else if(direction == 2)
     {
-        // Filling the first pipe
-        if(water_x == STARTING_X && water_y == STARTING_Y)
-        {
-            document.getElementById((STARTING_Y).toString() + STARTING_X.toString()).innerHTML = "<img src= 'f_pipe_start.png' width='50'>";
-        }
-
         water_x = (water_x == 9) ? 0 : water_x + 1;
         var temp = document.getElementById((water_y).toString() + water_x.toString()).getAttribute("data-pipe");
 
@@ -288,7 +386,7 @@ function checkNext()
             fillCurrent(1);
             winCheck();
         }
-        else if(temp == 3)
+        else if(temp == 3 || temp == '23')
         {
             direction = 2;
             fillCurrent(3);
@@ -324,7 +422,7 @@ function checkNext()
             direction = 3;
             fillCurrent(2);
         }
-        else if(temp == 3)
+        else if(temp == 3 || temp == '13')
         {
             direction = 3;
             fillCurrent(3);
@@ -359,7 +457,7 @@ function checkNext()
             direction = 4;
             fillCurrent(2);
         }
-        else if(temp == 3)
+        else if(temp == 3 || temp == '13')
         {
             direction = 4;
             fillCurrent(3);
@@ -388,10 +486,71 @@ function checkNext()
 }
 
 // Fill the current pipe with water by changing the image to filled pipe
-function fillCurrent(curr_pipe)
-{
-     document.getElementById((water_y).toString() + water_x.toString()).innerHTML = "<img src= 'f_pipe_" + curr_pipe + ".png' width='50'>";
-     score += 40;
+// data-pipe
+//  0 = start
+//	99 = end
+//  1 = left right
+//  2 = top bottom
+//  3 = square
+//  4 = left top
+//  5 = left bottom
+//  6 = right top
+//  7 = right downfunction fillCurrent(curr_pipe)
+//  8 = left right 2
+//  9 = top down 2
+//  13 = square horizontally filled
+//  23 = square vertically filled
+//  33 = square filled
+//  11,12,14,15,16,17,18,19 = filled pipes
+function fillCurrent(curr_pipe) {
+	// current pipe is double ended.
+	if(curr_pipe == 3) 
+	{
+		if(direction == 1 || direction == 2) 
+		{
+			var pipe = document.getElementById((water_y).toString() + water_x.toString()).getAttribute('data-pipe');
+			if(pipe == '23')
+			{
+				//document.getElementById((water_y).toString() + water_x.toString()).innerHTML = "<img src= 'f_pipe_3.png'>";
+				document.getElementById((water_y).toString() + water_x.toString()).innerHTML = "<span class= 'f_pipe_3 sprite'></span>";
+				document.getElementById((water_y).toString() + water_x.toString()).setAttribute('data-pipe', '33');
+				score += 150;
+			}
+			else
+			{
+				//document.getElementById((water_y).toString() + water_x.toString()).innerHTML = "<img src= 'f_h_pipe_3.png'>";
+				document.getElementById((water_y).toString() + water_x.toString()).innerHTML = "<span class= 'f_h_pipe_3 sprite'></span>";
+				document.getElementById((water_y).toString() + water_x.toString()).setAttribute('data-pipe', '13');
+				score += 50;
+			}
+		}
+		else if(direction == 3 || direction == 4)
+		{
+			var pipe = document.getElementById((water_y).toString() + water_x.toString()).getAttribute('data-pipe');
+			if(pipe == '13')
+			{
+				//document.getElementById((water_y).toString() + water_x.toString()).innerHTML = "<img src= 'f_pipe_3.png'>";
+				document.getElementById((water_y).toString() + water_x.toString()).innerHTML = "<span class= 'f_pipe_3 sprite'></span>";
+				document.getElementById((water_y).toString() + water_x.toString()).setAttribute('data-pipe', '33');
+				score += 150;
+			}
+			else
+			{
+				//document.getElementById((water_y).toString() + water_x.toString()).innerHTML = "<img src= 'f_v_pipe_3.png'>";
+				document.getElementById((water_y).toString() + water_x.toString()).innerHTML = "<span class= 'f_v_pipe_3 sprite'></span>";
+				document.getElementById((water_y).toString() + water_x.toString()).setAttribute('data-pipe', '23');		
+				score += 50;
+			}
+		}
+	}
+	//all other pipes.
+	else 
+	{
+		//document.getElementById((water_y).toString() + water_x.toString()).innerHTML = "<img src= 'f_pipe_" + curr_pipe + ".png'>";
+		document.getElementById((water_y).toString() + water_x.toString()).innerHTML = "<span class= 'f_pipe_" + curr_pipe + " sprite'></span>";
+		document.getElementById((water_y).toString() + water_x.toString()).setAttribute('data-pipe', '1' + curr_pipe);
+		score += 50;
+	}
      remaining = (remaining > 0) ? remaining - 1 : remaining;
      head();
 }
@@ -399,13 +558,54 @@ function fillCurrent(curr_pipe)
 // Game Over!
 function gameOver() 
 {
-    alert("You just lost the game, Way to go!");
+	window.clearInterval(loop);
+	document.getElementById("endScreen").style.display = "block";
+	for(i=0; i<10; i++)
+	{
+		if(high[i] < score)
+		{
+			document.getElementById("scoreSend").value = score.toString();
+			document.getElementById("gameOverHigh").style.display = "block";
+			document.getElementById("name").focus();
+			break;
+		}
+		else if(i == 9) 
+		{
+			document.getElementById("gameOver").style.display = "block";
+			document.getElementById("gameOverScore").innerHTML = "Score: " + score;
+			document.getElementById("gameOverBack").focus();
+		}
+	}
+	var aud = document.getElementById("game_lose");
+	aud.play();
+	//resetting variables
+	var pipe1 = getRandomInt();
+	var pipe2 = getRandomInt();
+	var pipe3 = getRandomInt();
+	var pipe4 = getRandomInt();
+	var pipe5 = getRandomInt();
+	generatePipes();
+	current_x = STARTING_X + 1;
+	current_y = STARTING_Y;
+	score = 0;
+	level = 0;
+	totalRemaining = 4;
+	remaining = 4;
+	time = 55;
+	remaining_Time = time;
+	water_x = STARTING_X;
+	water_y = STARTING_Y;
+	direction = 2;
+	interval = 1000;
 }
 
 // Check if the next pipe is end pipe
 function winCheck()
 {
-    var temp = document.getElementById((water_y).toString() + (water_x+1).toString()).getAttribute("data-pipe");
+	if(water_x != 9)
+	{
+		var temp = document.getElementById((water_y).toString() + (water_x+1).toString()).getAttribute("data-pipe");
+	}
     if (temp == "end")
     {
         if (remaining == 0) 
@@ -422,8 +622,13 @@ function winCheck()
 // Game Won
 function gameWon()
 {
-    alert("You win!(absolutely nothing)");
-    initialize();
+	var aud = document.getElementById("game_win");
+	aud.play();
+	window.clearInterval(loop);
+	document.getElementById("endScreen").style.display = "block";
+	document.getElementById("gameWon").style.display = "block";
+	document.getElementById("gameWonScore").innerHTML = "Score: " + score;
+	document.getElementById("gameWonContinue").focus();
 }
 
 // Generate the starting and ending pipe
@@ -440,4 +645,50 @@ function generatePipes()
         temp = Math.floor(Math.random() * (10 - 1)) + 1;
     }
     ENDING_X = temp;
+}
+
+
+// clearing the boxes after the level ends.
+function reset()
+{
+    var i;
+    for (i = 0; i < 10; i++)
+    {
+        var j;
+        for (j = 0; j < 10; j++)
+        {
+            document.getElementById(j.toString() + i.toString()).innerHTML = '';
+            document.getElementById(j.toString() + i.toString()).setAttribute('data-pipe', 'none');
+        }
+    }
+}
+
+function keyDownEnd(event) 
+{
+    var keyPressed = event.which || event.keyCode;
+    if (keyPressed == 13) // enter key
+    {
+		if(document.activeElement.id  == "gameOverBack")
+		{
+			document.getElementById('endScreen').style.display = "none";			
+			document.getElementById('gameOver').style.display = "none";			
+			document.getElementById('gameOverHigh').style.display = "none";			
+			document.getElementById('gamePlay').style.display = "none";			
+			document.getElementById('start').style.display = "block";
+			document.getElementById('startGame').focus();
+		}
+		else if (document.activeElement.id == "gameWonContinue")
+		{
+			document.getElementById('endScreen').style.display = "none";
+			document.getElementById('gameWon').style.display = "none";
+			start();
+		}
+		else if (document.activeElement.id == "name")
+		{
+			document.forms["highForm"].submit();		
+		}
+    }
+	else if (keyPressed == 9) {  //tab pressed
+        event.preventDefault(); // stops its action
+    }
 }
